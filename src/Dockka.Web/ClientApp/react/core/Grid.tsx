@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 export interface GridProps {
-  children?: Cell | Cell[];
+  children: any;
 }
 
 export const Grid = (props: GridProps) => (

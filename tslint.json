@@ -1,0 +1,34 @@
+{
+  "extends": [
+    "tslint-config-airbnb",
+    "tslint-react",
+    "tslint-config-prettier"
+  ],
+  "rules": {
+    "import-name": false,
+    "no-unused-variable": [true, {"severity": "error"}],
+    "no-increment-decrement": {"severity": "warning"},
+    "jsx-no-multiline-js": {
+      "severity": "warning"
+    },
+    "jsx-wrap-multiline": {
+      "severity": "warning"
+    },
+    "jsx-boolean-value": {
+      "severity": "none"
+    },
+    "trailing-comma": false,
+    "radix": false,
+    "prefer-array-literal": [false, {"severity": "none"}],
+    "ter-arrow-parens": [true, "as-needed"],
+    "variable-name": [
+      true,
+      "check-format",
+      "allow-pascal-case"
+    ],
+    "max-line-length": [
+      true,
+      180
+    ]
+  }
+}
