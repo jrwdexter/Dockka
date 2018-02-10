@@ -13,7 +13,7 @@ namespace Dockka.Api.Hubs
         public void AddPerson(Person person)
         {
             var addActor =
-                Program.AkkaSystem.ActorSelection("akka.tcp://dockka-system@dockka.api:9000/user/addService");
+                Program.AkkaSystem.ActorSelection("akka.tcp://dockka-system@dockka.api:9000/user/addPerson");
             addActor.Tell(new AddPersonMessage { Person = person });
         }
     }

@@ -3,7 +3,7 @@ using Dockka.Data.Models;
 
 namespace Dockka.Data.Messages
 {
-    public class AddPersonMessage : IAddPersonEvent
+    public class AddPersonMessage : IAddPersonMessage
     {
         public Person Person { get; set; }
     }

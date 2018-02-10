@@ -2,7 +2,7 @@
 
 namespace Dockka.Data.Messages.Base
 {
-    public interface IAddPersonEvent
+    public interface IAddPersonMessage
     {
         Person Person { get; set; }
     }

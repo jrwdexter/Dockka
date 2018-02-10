@@ -2,11 +2,6 @@
 using System.IO;
 using Akka.Actor;
 using Akka.Configuration;
-using Dockka.Data.Context;
-using Dockka.Data.Messages;
-using Dockka.Data.Messages.Base;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Dockka.ActorOne
 {
@@ -14,34 +9,20 @@ namespace Dockka.ActorOne
     {
         static void Main(string[] args)
         {
+            // Get actor configuration
             using (var reader = new StreamReader(File.OpenRead("./akka.conf")))
             {
                 var config = ConfigurationFactory.ParseString(reader.ReadToEnd());
+                // Join the cluster
                 using (var system = ActorSystem.Create("dockka-system", config))
                 {
-                    system.ActorOf<AddService>("addService");
+                    // Start the actor
+                    system.ActorOf<AddPersonActor>("addPerson");
+
+                    // Wait indefinitely
                     Console.ReadKey();
                 }
             }
-        }
-    }
-
-    internal class AddService : ReceiveActor
-    {
-        public AddService()
-        {
-            ReceiveAsync<IAddPersonEvent>(async personEvent =>
-            {
-                // Don't do this - did in the interest of time
-                var optionsBuilder = new DbContextOptionsBuilder<DockkaContext>()
-                    .UseSqlServer(Configuration.Instance.Settings.GetConnectionString("DockkaSqlServer")).Options;
-                using (var context = new DockkaContext(optionsBuilder))
-                {
-                    var entry = await context.AddAsync(personEvent.Person);
-                    await context.SaveChangesAsync();
-                    Context.ActorSelection("../queryService").Tell(new QueryPersonEvent { Id = entry.Entity.Id });
-                }
-            });
         }
     }
 }

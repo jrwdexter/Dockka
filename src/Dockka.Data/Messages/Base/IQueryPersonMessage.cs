@@ -1,6 +1,6 @@
 ﻿namespace Dockka.Data.Messages.Base
 {
-    public interface IQueryPersonEvent
+    public interface IQueryPersonMessage
     {
         int Id { get; set; }
     }

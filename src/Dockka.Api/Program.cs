@@ -66,7 +66,7 @@ namespace Dockka.Api
 
                 var lifetimeScope = serviceProvider.GetService<ILifetimeScope>();
                 var propsResolver = new AutoFacDependencyResolver(lifetimeScope, system);
-                system.ActorOf(system.DI().Props<UpdateUiActor>(), "ui");
+                system.ActorOf(system.DI().Props<UpdateUiActor>(), "updateUi");
                 return system;
             }
         }

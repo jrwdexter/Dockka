@@ -1,4 +1,7 @@
 ﻿using System;
+using System.IO;
+using Akka.Actor;
+using Akka.Configuration;
 
 namespace Dockka.ActorTwo
 {
@@ -6,7 +9,20 @@ namespace Dockka.ActorTwo
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            // Get actor configuration
+            using (var reader = new StreamReader(File.OpenRead("./akka.conf")))
+            {
+                var config = ConfigurationFactory.ParseString(reader.ReadToEnd());
+                // Join the cluster
+                using (var system = ActorSystem.Create("dockka-system", config))
+                {
+                    // Start the actor
+                    system.ActorOf<QueryPersonActor>("queryPerson");
+
+                    // Wait indefinitely
+                    Console.ReadKey();
+                }
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Dockka.Data.Messages
 {
-    public class QueryPersonEvent : IQueryPersonEvent
+    public class QueryPersonMessage : IQueryPersonMessage
     {
         public int Id { get; set; }
     }
