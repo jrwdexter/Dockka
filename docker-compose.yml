@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+  dockka.api:
+    image: dockka.api
+    build:
+      context: .
+      dockerfile: src/Dockka.Api/Dockerfile
+    networks:
+      - dockka
+    depends_on:
+      - logstash
+      - sql
+
+  dockka.web:
+    image: dockka.web
+    build:
+      context: .
+      dockerfile: src/Dockka.Web/Dockerfile
+    
+  sql:
+    image: microsoft/mssql-server-linux
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Test123!
+      - MSSQL_PID=Developer
+    ports:
+      - "1433:1433"
+    networks:
+      - dockka
+
+  elasticsearch:
+    build: logging/elasticsearch/
+    volumes:
+      - ./logging/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - ES_JAVA_OPTS=-Xmx256m -Xms256m
+    networks:
+      - dockka
+
+  logstash:
+    build: logging/logstash/
+    volumes:
+      - ./logging/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logging/logstash/pipeline:/usr/share/logstash/pipeline
+    ports:
+      - "5000:5000"
+      - "2120:2120"
+    environment:
+      - LS_JAVA_OPTS=-Xmx256m -Xms256m
+    networks:
+      - dockka
+    depends_on:
+      - elasticsearch
+
+  kibana:
+    build: logging/kibana/
+    volumes:
+      - ./logging/kibana/config/:/usr/share/kibana/config
+    ports:
+      - "5601:5601"
+    networks:
+      - dockka
+    depends_on:
+      - elasticsearch
+
+networks:
+  dockka:
+    driver: bridge
