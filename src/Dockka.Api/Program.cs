@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Akka.Actor;
+using Akka.Cluster.Tools.PublishSubscribe;
 using Akka.Configuration;
 using Akka.DI.AutoFac;
 using Akka.DI.Core;
@@ -32,7 +33,7 @@ namespace Dockka.Api
                         .MinimumLevel.Debug()
                         .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
                         .Enrich.FromLogContext()
-                        .WriteTo.Console()
+                        .WriteTo.ColoredConsole()
                         .WriteTo.Http("logstash:2120")
                         .CreateLogger();
             try
@@ -52,13 +53,16 @@ namespace Dockka.Api
             }
         }
 
+        public static IActorRef Mediator { get; set; }
+
         public static ActorSystem AkkaSystem { get; set; }
 
         private static ActorSystem BuildAkkaCluster(IWebHost webHost)
         {
+            var akkaConfFile = Environment.GetEnvironmentVariable("AKKA_CONF_FILENAME");
             // Build our Akka cluster, and associate it with the DI container
             // Start our seed node
-            using (var reader = new StreamReader(File.OpenRead("./akka.conf")))
+            using (var reader = new StreamReader(File.OpenRead(akkaConfFile ?? "akka.conf")))
             {
                 var serviceProvider = webHost.Services as AutofacServiceProvider;
                 var config = ConfigurationFactory.ParseString(reader.ReadToEnd());
@@ -66,6 +70,7 @@ namespace Dockka.Api
 
                 var lifetimeScope = serviceProvider.GetService<ILifetimeScope>();
                 var propsResolver = new AutoFacDependencyResolver(lifetimeScope, system);
+                Mediator = DistributedPubSub.Get(system).Mediator;
                 system.ActorOf(system.DI().Props<UpdateUiActor>(), "updateUi");
                 return system;
             }

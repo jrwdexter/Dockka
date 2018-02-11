@@ -2,8 +2,10 @@ import { createStore, applyMiddleware, compose, combineReducers, GenericStoreEnh
 import thunk from 'redux-thunk';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
 import * as StoreModule from './store';
-import { ApplicationState, reducers } from './store';
+import { reducers } from './store';
 import { History } from 'history';
+import { ApplicationState } from './store/ApplicationState';
+import { startSignalR } from './signalR';
 
 export default function configureStore(history: History, initialState?: ApplicationState) {
     // Build middleware. These are functions that can process the actions before they reach the store.
@@ -18,6 +20,7 @@ export default function configureStore(history: History, initialState?: Applicat
     // Combine all reducers and instantiate the app-wide store instance
     const allReducers = buildRootReducer(reducers);
     const store = createStoreWithMiddleware(allReducers, initialState) as Store<ApplicationState>;
+    startSignalR(store);
 
     // Enable Webpack hot module replacement for reducers
     if (module.hot) {

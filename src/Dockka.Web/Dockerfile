@@ -1,4 +1,4 @@
-FROM microsoft/aspnetcore:2.0 AS base
+FROM microsoft/aspnetcore-build:2.0 AS base
 WORKDIR /app
 EXPOSE 80
 
@@ -9,6 +9,7 @@ COPY src/Dockka.Web/Dockka.Web.csproj Dockka.Web/
 RUN dotnet restore
 COPY ./src .
 WORKDIR /src/Dockka.Web
+RUN npm install -g yarn
 RUN dotnet build -c Release -o /app
 
 FROM build AS publish

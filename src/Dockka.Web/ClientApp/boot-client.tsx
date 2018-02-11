@@ -6,8 +6,8 @@ import { Provider } from 'react-redux';
 import { ConnectedRouter } from 'react-router-redux';
 import { createBrowserHistory } from 'history';
 import configureStore from './configureStore';
-import { ApplicationState }  from './store';
 import * as RoutesModule from './routes';
+import { ApplicationState } from './store/ApplicationState';
 let routes = RoutesModule.routes;
 
 // Create browser history to use in the Redux store

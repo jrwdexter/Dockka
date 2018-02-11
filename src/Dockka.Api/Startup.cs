@@ -1,10 +1,14 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
+using Dockka.Api.Actors;
 using Dockka.Api.Hubs;
 using Dockka.Data.Context;
+using Dockka.Data.Extensions;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -39,16 +43,26 @@ namespace Dockka.Api
             });
 
             // Configure Entity Framework
-            services.AddDbContext<DockkaContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<DockkaContext>(options => options.UseSqlServer(connectionString).WaitForActiveServer(TimeSpan.FromSeconds(300)));
             services.AddMvc();
             services.AddRouting();
 
+            services.AddCors(o =>
+                o.AddPolicy("Everything", p =>
+                {
+                    p.AllowAnyHeader();
+                    p.AllowAnyMethod();
+                    p.AllowAnyOrigin();
+                }));
+
             // Add SignalR for websockets
             services.AddSignalR();
+
         }
 
         public void ConfigureContainer(ContainerBuilder builder)
         {
+            builder.RegisterType<UpdateUiActor>();
             // Register AutoFac services here
         }
 
@@ -71,7 +85,8 @@ namespace Dockka.Api
             });
             app.UseMvc();
 
-            // Map signalR hub
+            app.UseCors("Everything");
+
             app.UseSignalR(routes => routes.MapHub<PersonsHub>("persons"));
         }
     }

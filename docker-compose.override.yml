@@ -3,14 +3,11 @@ version: '3'
 services:
   dockka.api:
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
       - SQL_CONN=Server=sql,1433;Initial Catalog=dockka;User Id=sa;Password=Test123!
     ports:
-      - "81:80"
+      - "8001:80"
 
   dockka.web:
-    environment:
-      - ASPNETCORE_ENVIRONMENT=Development
     ports:
-      - "80"
+      - "8000:80"
 

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Akka.Actor;
+using Akka.Cluster.Tools.PublishSubscribe;
 using Dockka.Data.Messages;
 using Dockka.Data.Models;
 using Microsoft.AspNetCore.SignalR;
+using Serilog;
 
 namespace Dockka.Api.Hubs
 {
@@ -12,9 +11,9 @@ namespace Dockka.Api.Hubs
     {
         public void AddPerson(Person person)
         {
-            var addActor =
-                Program.AkkaSystem.ActorSelection("akka.tcp://dockka-system@dockka.api:9000/user/addPerson");
-            addActor.Tell(new AddPersonMessage { Person = person });
+            // Tell our mediator about this new person
+            Log.Information($"signalR: Received add person request for Person: (FirstName {person.FirstName}, LastName {person.LastName})");
+            Program.Mediator.Tell(new Publish("addPerson", new AddPersonMessage { Person = person }));
         }
     }
 }

@@ -6,11 +6,40 @@ services:
     build:
       context: .
       dockerfile: src/Dockka.Api/Dockerfile
+    environment:
+      - AKKA_CONF_FILENAME=akka.docker.conf
+      - SQL_CONN=Server=sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
     networks:
-      - dockka
+      - dockka-network
     depends_on:
       - logstash
       - sql
+
+  dockka.actorone:
+    image: dockka.actorone
+    build:
+      context: .
+      dockerfile: src/Dockka.ActorOne/Dockerfile
+    environment:
+      - AKKA_CONF_FILENAME=akka.docker.conf
+      - SQL_CONN=Server=sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
+    networks:
+      - dockka-network
+    depends_on:
+      - dockka.api
+
+  dockka.actortwo:
+    image: dockka.actortwo
+    build:
+      context: .
+      dockerfile: src/Dockka.ActorTwo/Dockerfile
+    environment:
+      - AKKA_CONF_FILENAME=akka.docker.conf
+      - SQL_CONN=Server=sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
+    networks:
+      - dockka-network
+    depends_on:
+      - dockka.api
 
   dockka.web:
     image: dockka.web
@@ -25,9 +54,9 @@ services:
       - SA_PASSWORD=Test123!
       - MSSQL_PID=Developer
     ports:
-      - "1433:1433"
+      - "1434:1433"
     networks:
-      - dockka
+      - dockka-network
 
   elasticsearch:
     build: logging/elasticsearch/
@@ -39,7 +68,7 @@ services:
     environment:
       - ES_JAVA_OPTS=-Xmx256m -Xms256m
     networks:
-      - dockka
+      - dockka-network
 
   logstash:
     build: logging/logstash/
@@ -52,7 +81,7 @@ services:
     environment:
       - LS_JAVA_OPTS=-Xmx256m -Xms256m
     networks:
-      - dockka
+      - dockka-network
     depends_on:
       - elasticsearch
 
@@ -63,10 +92,10 @@ services:
     ports:
       - "5601:5601"
     networks:
-      - dockka
+      - dockka-network
     depends_on:
       - elasticsearch
 
 networks:
-  dockka:
+  dockka-network:
     driver: bridge

@@ -1,9 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Microsoft.Extensions.Configuration;
 
-namespace Dockka.ActorOne
+namespace Dockka.Config
 {
-    internal class Configuration
+    public class Configuration
     {
         private static readonly object padlock = new object();
         private static Configuration _instance;
@@ -32,6 +33,9 @@ namespace Dockka.ActorOne
                 return _instance;
             }
         }
+
+        public static string DockkaSqlConnection => Environment.GetEnvironmentVariable("SQL_CONN") ??
+                                                    Instance.Settings.GetConnectionString("DockkaSqlConnection");
 
         public IConfigurationRoot Settings { get; }
     }

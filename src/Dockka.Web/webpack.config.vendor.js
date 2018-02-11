@@ -17,8 +17,6 @@ module.exports = (env) => {
         },
         entry: {
             vendor: [
-                'bootstrap',
-                'bootstrap/dist/css/bootstrap.css',
                 'domain-task',
                 'event-source-polyfill',
                 'history',
@@ -28,8 +26,7 @@ module.exports = (env) => {
                 'react-redux',
                 'redux',
                 'redux-thunk',
-                'react-router-redux',
-                'jquery'
+                'react-router-redux'
             ],
         },
         output: {
@@ -38,7 +35,6 @@ module.exports = (env) => {
             library: '[name]_[hash]',
         },
         plugins: [
-            new webpack.ProvidePlugin({ $: 'jquery', jQuery: 'jquery' }), // Maps these identifiers to the jQuery package (because Bootstrap expects it to be a global variable)
             new webpack.NormalModuleReplacementPlugin(/\/iconv-loader$/, require.resolve('node-noop')), // Workaround for https://github.com/andris9/encoding/issues/16
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': isDevBuild ? '"development"' : '"production"'

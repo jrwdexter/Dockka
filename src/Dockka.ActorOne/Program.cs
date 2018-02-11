@@ -1,7 +1,9 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using Akka.Actor;
 using Akka.Configuration;
+using Serilog;
 
 namespace Dockka.ActorOne
 {
@@ -9,8 +11,15 @@ namespace Dockka.ActorOne
     {
         static void Main(string[] args)
         {
+            var logger = new LoggerConfiguration()
+                .WriteTo.ColoredConsole()
+                .WriteTo.Http("logstash:2120")
+                .MinimumLevel.Information()
+                .CreateLogger();
+            Log.Logger = logger;
+            var akkaConfFile = Environment.GetEnvironmentVariable("AKKA_CONF_FILENAME");
             // Get actor configuration
-            using (var reader = new StreamReader(File.OpenRead("./akka.conf")))
+            using (var reader = new StreamReader(File.OpenRead(akkaConfFile ?? "akka.conf")))
             {
                 var config = ConfigurationFactory.ParseString(reader.ReadToEnd());
                 // Join the cluster
@@ -20,7 +29,10 @@ namespace Dockka.ActorOne
                     system.ActorOf<AddPersonActor>("addPerson");
 
                     // Wait indefinitely
-                    Console.ReadKey();
+                    if(string.IsNullOrEmpty(akkaConfFile))
+                        Console.ReadKey();
+                    else
+                        Thread.Sleep(Timeout.Infinite);
                 }
             }
         }

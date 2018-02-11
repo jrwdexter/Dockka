@@ -1,10 +1,15 @@
-﻿using Akka.Actor;
+﻿using System;
+using Akka.Actor;
+using Akka.Cluster.Tools.PublishSubscribe;
+using Dockka.Config;
 using Dockka.Data.Context;
+using Dockka.Data.Extensions;
 using Dockka.Data.Messages;
 using Dockka.Data.Messages.Base;
 using Dockka.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace Dockka.ActorTwo
 {
@@ -16,19 +21,26 @@ namespace Dockka.ActorTwo
     {
         public QueryPersonActor()
         {
+            // Due to distributed systems, we have to subscribe to 'queryPerson'
+            var mediator = DistributedPubSub.Get(Context.System).Mediator;
+            mediator.Tell(new Subscribe("queryPerson", Self));
+
             ReceiveAsync<IQueryPersonMessage>(async queryMessage =>
             {
+                Log.Information("queryPerson received person");
                 // Don't do this - did in the interest of time
                 // Prefer injected DB Context of some sort.
-                var optionsBuilder = new DbContextOptionsBuilder<DockkaContext>()
-                    .UseSqlServer(Configuration.Instance.Settings.GetConnectionString("DockkaSqlServer")).Options;
-                using (var context = new DockkaContext(optionsBuilder))
+                var options = new DbContextOptionsBuilder<DockkaContext>()
+                    .UseSqlServer(Configuration.DockkaSqlConnection)
+                    .WaitForActiveServer(TimeSpan.FromSeconds(300))
+                    .Options;
+                using (var context = new DockkaContext(options))
                 {
                     // Add the person to the DB
                     var person = await context.FindAsync<Person>(queryMessage.Id);
 
                     // Request the UI actor to update the UI
-                    Context.ActorSelection("../updateUi").Tell(new UpdateUiMessage { Person = person });
+                    mediator.Tell(new Publish("updateUi", new UpdateUiMessage { Person = person }));
                 }
             });
         }

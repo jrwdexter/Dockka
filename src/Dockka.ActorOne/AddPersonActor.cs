@@ -1,9 +1,13 @@
-﻿using Akka.Actor;
+﻿using System;
+using Akka.Actor;
+using Akka.Cluster.Tools.PublishSubscribe;
+using Dockka.Config;
 using Dockka.Data.Context;
+using Dockka.Data.Extensions;
 using Dockka.Data.Messages;
 using Dockka.Data.Messages.Base;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
+using Serilog;
 
 namespace Dockka.ActorOne
 {
@@ -16,20 +20,27 @@ namespace Dockka.ActorOne
     {
         public AddPersonActor()
         {
+            // Due to distributed systems, we have to subscribe to 'queryPerson'
+            var mediator = DistributedPubSub.Get(Context.System).Mediator;
+            mediator.Tell(new Subscribe("addPerson", Self));
+
             ReceiveAsync<IAddPersonMessage>(async personEvent =>
             {
+                Log.Information($"addPerson received person: (FirstName {personEvent.Person.FirstName}, LastName {personEvent.Person.LastName}).");
                 // Don't do this - did in the interest of time
                 // Prefer injected DB Context of some sort.
-                var optionsBuilder = new DbContextOptionsBuilder<DockkaContext>()
-                    .UseSqlServer(Configuration.Instance.Settings.GetConnectionString("DockkaSqlServer")).Options;
-                using (var context = new DockkaContext(optionsBuilder))
+                var options = new DbContextOptionsBuilder<DockkaContext>()
+                    .UseSqlServer(Configuration.DockkaSqlConnection)
+                    .WaitForActiveServer(TimeSpan.FromSeconds(300))
+                    .Options;
+                using (var context = new DockkaContext(options))
                 {
                     // Add the person to the DB
                     var entry = await context.AddAsync(personEvent.Person);
                     await context.SaveChangesAsync();
 
                     // And request the query actor to get that person
-                    Context.ActorSelection("../queryPerson").Tell(new QueryPersonMessage { Id = entry.Entity.Id });
+                    mediator.Tell(new Publish("queryPerson", new QueryPersonMessage { Id = entry.Entity.Id }));
                 }
             });
         }

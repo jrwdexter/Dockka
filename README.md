@@ -7,8 +7,9 @@ In order to run this application, you need:
 In order to build and develop, add:
 
 * .NET Core
-* Yarn
-* Webpack (install `webpack` and `webpack-dev-server` globally)
+* Node
+* Yarn (`npm install -g yarn`)
+* MS SQL Local (MSSQLLocalDb - installed with Visual Studio)
 
 ## Technologies
 
@@ -33,14 +34,35 @@ That should be it.
 
 ## Building the application
 
-In order to build the application:
+Open in visual studio. Run.
 
-### Front-end
+That's it.
 
-```
-cd Dockka.Web
-yarn
-webpack
-```
+## Interesting URLs
 
-Alternatively, `webpack-dev-server` can be used for development.
+### When hosting within Docker
+
+| Role   | Url                   |
+| ------ | --------------------- |
+| Web    | http://localhost:8000 |
+| API    | http://localhost:8001 |
+| Kibana | http://localhost:5601 |
+| SQL    | localhost,1434        |
+
+### When hosting locally
+
+| Role | Url                    |
+| ---- | ---------------------- |
+| Web  | Assigned by VS         |
+| API  | Assigned by VS         |
+| SQL  | (localdb)\MSSQLLocalDb |
+
+Kibana is not present when hosting locally. See consoles instead.
+
+## Front-end
+
+The front-end is contained within `Dockka.Web\ClientApp`, and uses React and Redux.
+
+## Database
+
+The database has automatic migrations enabled, and can be access

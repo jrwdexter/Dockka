@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dockka.ActorOne", "src\Dock
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dockka.ActorTwo", "src\Dockka.ActorTwo\Dockka.ActorTwo.csproj", "{8F40362F-9501-4B12-8770-9F8EBC301578}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Dockka.Config", "src\Dockka.Config\Dockka.Config.csproj", "{D1089CAD-4651-4C85-9910-E85ED7D554BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -96,6 +98,18 @@ Global
 		{8F40362F-9501-4B12-8770-9F8EBC301578}.Release|x64.Build.0 = Release|Any CPU
 		{8F40362F-9501-4B12-8770-9F8EBC301578}.Release|x86.ActiveCfg = Release|Any CPU
 		{8F40362F-9501-4B12-8770-9F8EBC301578}.Release|x86.Build.0 = Release|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Debug|x64.Build.0 = Debug|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Debug|x86.Build.0 = Debug|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Release|x64.ActiveCfg = Release|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Release|x64.Build.0 = Release|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Release|x86.ActiveCfg = Release|Any CPU
+		{D1089CAD-4651-4C85-9910-E85ED7D554BB}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
