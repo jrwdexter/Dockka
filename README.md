@@ -66,7 +66,3 @@ Kibana is not present when hosting locally. See consoles instead.
 ## Front-end
 
 The front-end is contained within `Dockka.Web\ClientApp`, and uses React and Redux.
-
-## Database
-
-The database has automatic migrations enabled, and can be access
