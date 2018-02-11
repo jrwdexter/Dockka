@@ -1,13 +1,11 @@
 version: '3'
 
 services:
-  dockka.api:
-    environment:
-      - SQL_CONN=Server=sql,1433;Initial Catalog=dockka;User Id=sa;Password=Test123!
+  dockka-api:
     ports:
       - "8001:80"
 
-  dockka.web:
+  dockka-web:
     ports:
       - "8000:80"
 

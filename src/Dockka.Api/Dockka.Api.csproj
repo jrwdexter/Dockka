@@ -21,9 +21,6 @@
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
     <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.0.0-alpha2-final" />
     <PackageReference Include="Serilog.AspNetCore" Version="2.1.0" />
-    <PackageReference Include="Serilog.Sinks.ColoredConsole" Version="3.0.1" />
-    <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
-    <PackageReference Include="Serilog.Sinks.Http" Version="4.3.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="1.1.0" />
   </ItemGroup>
 
@@ -33,6 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Dockka.Data\Dockka.Data.csproj" />
+    <ProjectReference Include="..\Dockka.Logging\Dockka.Logging.csproj" />
   </ItemGroup>
 
   <ItemGroup>

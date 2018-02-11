@@ -1,3 +1,7 @@
+# Preface
+
+This is a demo application that is meant to showcase a number of technologies. This is a complex architecture that is overkill for most problems.
+
 # Requirements
 
 In order to run this application, you need:

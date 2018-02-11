@@ -1,53 +1,53 @@
 version: '3'
 
 services:
-  dockka.api:
-    image: dockka.api
+  dockka-api:
+    image: dockka-api
     build:
       context: .
       dockerfile: src/Dockka.Api/Dockerfile
     environment:
       - AKKA_CONF_FILENAME=akka.docker.conf
-      - SQL_CONN=Server=sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
+      - SQL_CONN=Server=dockka-sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
     networks:
       - dockka-network
     depends_on:
       - logstash
-      - sql
+      - dockka-sql
 
-  dockka.actorone:
-    image: dockka.actorone
+  dockka-actorone:
+    image: dockka-actorone
     build:
       context: .
-      dockerfile: src/Dockka.ActorOne/Dockerfile
+      dockerfile: src/Dockka.Actors.ActorOne/Dockerfile
     environment:
       - AKKA_CONF_FILENAME=akka.docker.conf
-      - SQL_CONN=Server=sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
+      - SQL_CONN=Server=dockka-sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
     networks:
       - dockka-network
     depends_on:
-      - dockka.api
+      - dockka-api
 
-  dockka.actortwo:
-    image: dockka.actortwo
+  dockka-actortwo:
+    image: dockka-actortwo
     build:
       context: .
-      dockerfile: src/Dockka.ActorTwo/Dockerfile
+      dockerfile: src/Dockka.Actors.ActorTwo/Dockerfile
     environment:
       - AKKA_CONF_FILENAME=akka.docker.conf
-      - SQL_CONN=Server=sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
+      - SQL_CONN=Server=dockka-sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
     networks:
       - dockka-network
     depends_on:
-      - dockka.api
+      - dockka-api
 
-  dockka.web:
-    image: dockka.web
+  dockka-web:
+    image: dockka-web
     build:
       context: .
       dockerfile: src/Dockka.Web/Dockerfile
     
-  sql:
+  dockka-sql:
     image: microsoft/mssql-server-linux
     environment:
       - ACCEPT_EULA=Y
@@ -59,7 +59,8 @@ services:
       - dockka-network
 
   elasticsearch:
-    build: logging/elasticsearch/
+    build: 
+      context: logging/elasticsearch/
     volumes:
       - ./logging/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
     ports:
@@ -71,7 +72,8 @@ services:
       - dockka-network
 
   logstash:
-    build: logging/logstash/
+    build: 
+      context: logging/logstash/
     volumes:
       - ./logging/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logging/logstash/pipeline:/usr/share/logstash/pipeline
@@ -86,7 +88,8 @@ services:
       - elasticsearch
 
   kibana:
-    build: logging/kibana/
+    build: 
+      context: logging/kibana/
     volumes:
       - ./logging/kibana/config/:/usr/share/kibana/config
     ports:

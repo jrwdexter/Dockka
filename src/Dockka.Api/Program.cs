@@ -18,7 +18,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Events;
-using Serilog.Sinks.Http.Private.Sinks;
 
 namespace Dockka.Api
 {
@@ -29,13 +28,6 @@ namespace Dockka.Api
             // Configure logging from Serilog to sink to Logstash
             // Logstash is an ingestor of logs, and inserts those to elasticsearch
             // Elasticsearch can be viewed via kibana dashboard at localhost:5601
-            Log.Logger = new LoggerConfiguration()
-                        .MinimumLevel.Debug()
-                        .MinimumLevel.Override("Microsoft", LogEventLevel.Information)
-                        .Enrich.FromLogContext()
-                        .WriteTo.ColoredConsole()
-                        .WriteTo.Http("logstash:2120")
-                        .CreateLogger();
             try
             {
                 Log.Information("Starting web host");

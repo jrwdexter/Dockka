@@ -1,17 +1,17 @@
-FROM microsoft/aspnetcore:2.0 AS base
+FROM microsoft/dotnet:2.0-runtime AS base
 WORKDIR /app
-EXPOSE 80
-EXPOSE 9000
+EXPOSE 9002
 
-FROM microsoft/aspnetcore-build:2.0 AS build
+FROM microsoft/dotnet:2.0-sdk AS build
 WORKDIR /src
 COPY *.sln ./
-COPY src/Dockka.Api/Dockka.Api.csproj src/Dockka.Api/
+COPY src/Dockka.Actors.ActorTwo/Dockka.Actors.ActorTwo.csproj src/Dockka.Actors.ActorTwo/
 COPY src/Dockka.Logging/Dockka.Logging.csproj src/Dockka.Logging/
+COPY src/Dockka.Config/Dockka.Config.csproj src/Dockka.Config/
 COPY src/Dockka.Data/Dockka.Data.csproj src/Dockka.Data/
 RUN dotnet restore
 COPY . .
-WORKDIR /src/src/Dockka.Api
+WORKDIR /src/src/Dockka.Actors.ActorTwo
 RUN dotnet build -c Release -o /app
 
 FROM build AS publish
@@ -20,4 +20,4 @@ RUN dotnet publish -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "Dockka.Api.dll"]
+ENTRYPOINT ["dotnet", "Dockka.Actors.ActorTwo.dll"]

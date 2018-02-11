@@ -6,7 +6,7 @@
     <ProjectGuid>145e6a91-6a43-4b03-8b6c-20c67b43a41d</ProjectGuid>
     <DockerLaunchBrowser>True</DockerLaunchBrowser>
     <DockerServiceUrl>http://localhost:{ServicePort}</DockerServiceUrl>
-    <DockerServiceName>dockka.api</DockerServiceName>
+    <DockerServiceName>dockka-api</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
