@@ -11,6 +11,7 @@ using Akka.DI.Core;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Dockka.Api.Actors;
+using Dockka.Logging;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -27,6 +28,7 @@ namespace Dockka.Api
         {
             // Configure logging from Serilog to sink to Logstash
             // Logstash is an ingestor of logs, and inserts those to elasticsearch
+            Log.Logger = LogSetup.ConfigureLogger();
             // Elasticsearch can be viewed via kibana dashboard at localhost:5601
             try
             {
