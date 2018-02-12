@@ -28,7 +28,7 @@ namespace Dockka.Api
         {
             // Configure logging from Serilog to sink to Logstash
             // Logstash is an ingestor of logs, and inserts those to elasticsearch
-            Log.Logger = LogSetup.ConfigureLogger();
+            LogSetup.ConfigureLogger();
             // Elasticsearch can be viewed via kibana dashboard at localhost:5601
             try
             {
