@@ -1,0 +1,60 @@
+version: '3'
+
+services:
+  dockka-api:
+    image: dockka-api
+    build:
+      context: .
+      dockerfile: src/Dockka.Api/Dockerfile
+    environment:
+      - AKKA_CONF_FILENAME=akka.docker.conf
+      - SQL_CONN=Server=dockka-sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
+    networks:
+      - dockka-network
+    depends_on:
+      - dockka-sql
+
+  dockka-actorone:
+    image: dockka-actorone
+    build:
+      context: .
+      dockerfile: src/Dockka.Actors.ActorOne/Dockerfile
+    environment:
+      - AKKA_CONF_FILENAME=akka.docker.conf
+      - SQL_CONN=Server=dockka-sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
+    networks:
+      - dockka-network
+    depends_on:
+      - dockka-api
+
+  dockka-actortwo:
+    image: dockka-actortwo
+    build:
+      context: .
+      dockerfile: src/Dockka.Actors.ActorTwo/Dockerfile
+    environment:
+      - AKKA_CONF_FILENAME=akka.docker.conf
+      - SQL_CONN=Server=dockka-sql,1433;Initial Catalog=Dockka;User Id=sa;Password=Test123!
+    networks:
+      - dockka-network
+    depends_on:
+      - dockka-api
+
+  dockka-web:
+    image: dockka-web
+    build:
+      context: .
+      dockerfile: src/Dockka.Web/Dockerfile
+    
+  dockka-sql:
+    image: microsoft/mssql-server-windows-developer
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Test123!
+    ports:
+      - "1434:1433"
+    networks:
+      - dockka-network
+
+networks:
+  dockka-network:
