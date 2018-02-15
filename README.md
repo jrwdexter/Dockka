@@ -28,6 +28,8 @@ Technologies in play include:
 * Entity Framework
 * Microsoft SQL Server
 
+![Dockka Architecture](assets/dockka-architecture.png)
+
 ## Running the Application
 
 In order to build the application, run:
